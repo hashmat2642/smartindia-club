@@ -1,9 +1,30 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function ResultPage() {
+  return (
+    <Suspense fallback={<ResultLoading />}>
+      <ResultContent />
+    </Suspense>
+  );
+}
+
+function ResultLoading() {
+  return (
+    <main className="min-h-screen bg-slate-950 text-white">
+      <section className="mx-auto max-w-4xl px-6 py-16">
+        <div className="rounded-3xl bg-slate-900 p-8 text-center">
+          Loading result...
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function ResultContent() {
   const searchParams = useSearchParams();
   const score = Number(searchParams.get("score")) || 0;
 
@@ -50,9 +71,7 @@ export default function ResultPage() {
           </div>
 
           <div className="mt-8 rounded-2xl bg-slate-800 p-5">
-            <h2 className="text-2xl font-bold text-green-400">
-              Feedback
-            </h2>
+            <h2 className="text-2xl font-bold text-green-400">Feedback</h2>
             <p className="mt-3 text-slate-300">{message}</p>
           </div>
 
