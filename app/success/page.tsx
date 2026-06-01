@@ -1,7 +1,30 @@
+"use client";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function SuccessPage() {
-  const studentId = "SIC-2026-001";
+  return (
+    <Suspense fallback={<Loading />}>
+      <SuccessContent />
+    </Suspense>
+  );
+}
+
+function Loading() {
+  return (
+    <main className="min-h-screen bg-slate-950 text-white">
+      <section className="mx-auto max-w-4xl px-6 py-16">
+        Loading...
+      </section>
+    </main>
+  );
+}
+
+function SuccessContent() {
+  const searchParams = useSearchParams();
+  const studentId = searchParams.get("studentId") || "SIC-PENDING";
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -16,8 +39,8 @@ export default function SuccessPage() {
           </h1>
 
           <p className="mt-4 text-slate-300">
-            Your registration has been received for the First Educational Skill
-            Tournament.
+            Your registration has been received for the SmartIndia.club
+            Educational Skill Tournament.
           </p>
 
           <div className="mt-8 grid gap-5 md:grid-cols-3">
@@ -45,10 +68,10 @@ export default function SuccessPage() {
             <h2 className="text-2xl font-bold">Next Steps</h2>
 
             <ul className="mt-4 space-y-3 text-slate-300">
-              <li>• Complete ₹50 registration payment.</li>
               <li>• Keep your Student ID safe.</li>
+              <li>• Complete ₹50 registration payment.</li>
               <li>• Practice quiz, logic and coding basics before tournament.</li>
-              <li>• Final tournament update will be announced on the website.</li>
+              <li>• Certificate will be generated after tournament result.</li>
             </ul>
           </div>
 

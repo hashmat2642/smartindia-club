@@ -1,16 +1,22 @@
+
 import Image from "next/image";
 import Link from "next/link";
-import { students } from "../../data/students";
+import { QRCodeSVG } from "qrcode.react";
+import PrintButton from "@/components/PrintButton";
+import { supabase } from "@/lib/supabase";
 
-
-export default function DynamicCertificatePage({
+export default async function DynamicCertificatePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const student = students.find(
-    (item) => item.certificateId === params.id
-  );
+  const { id } = await params;
+
+ const { data: student } = await supabase
+  .from("students")
+  .select("*")
+  .eq("certificate_id", id)
+  .single();
 
   if (!student) {
     return (
@@ -20,7 +26,6 @@ export default function DynamicCertificatePage({
           <p className="mt-4 text-slate-300">
             Please check the certificate ID and try again.
           </p>
-
           <Link
             href="/certificate"
             className="mt-8 inline-block rounded-xl bg-green-500 px-6 py-3 font-bold text-slate-950"
@@ -33,98 +38,132 @@ export default function DynamicCertificatePage({
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-12 text-white">
-      <section className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
+      <section className="mx-auto max-w-7xl">
         <p className="text-sm font-semibold text-green-400">
           SmartIndia.club Certificate Verification
         </p>
 
         <h1 className="mt-2 text-4xl font-bold">Verified Certificate</h1>
 
-        <div className="mt-10 rounded-[2rem] bg-white p-6 text-slate-950 shadow-2xl md:p-10">
-          <div className="border-4 border-green-500 p-6 md:p-10">
-            <div className="text-center">
-              <Image
-                src="/smartindia-logo.png"
-                alt="SmartIndia.club Logo"
-                width={160}
-                height={160}
-                className="mx-auto"
-              />
+        <div className="certificate-print-area mt-8 overflow-x-auto rounded-3xl bg-slate-900 p-6 shadow-2xl">
+          <div className="mx-auto w-[1100px] bg-white p-8 text-slate-950">
+            <div className="relative border-[6px] border-slate-900 p-8">
+              <div className="absolute right-8 top-8 rounded-full bg-green-100 px-5 py-2 text-sm font-bold text-green-700">
+                VERIFIED
+              </div>
 
-              <p className="mt-3 text-sm font-bold tracking-[0.3em] text-green-600">
-                LEARN • COMPETE • GROW
+              <p className="absolute left-8 top-8 text-xs font-bold text-slate-500">
+                Certificate No: {student.certificate_id}
               </p>
 
-              <h2 className="mt-6 text-4xl font-bold text-slate-900">
-                Certificate of Achievement
-              </h2>
+              <div className="text-center">
+                <Image
+                  src="/smartindia-logo.png"
+                  alt="SmartIndia.club Logo"
+                  width={150}
+                  height={150}
+                  className="mx-auto"
+                />
 
-              <p className="mt-6 text-lg text-slate-600">
-                This certificate is proudly awarded to
-              </p>
+                <p className="mt-2 text-xs font-bold tracking-[0.35em] text-green-600">
+                  LEARN • COMPETE • GROW
+                </p>
 
-              <h3 className="mt-4 text-5xl font-bold text-green-700">
-                {student.name}
-              </h3>
+                <h2 className="mt-6 text-5xl font-extrabold text-slate-900">
+                  Certificate of Achievement
+                </h2>
 
-              <p className="mx-auto mt-6 max-w-3xl text-lg text-slate-700">
-                For successfully achieving in the SmartIndia.club Educational
-                Skill Tournament and demonstrating learning, confidence,
-                participation and future-ready skill development.
-              </p>
-            </div>
+                <p className="mt-4 text-lg text-slate-600">
+                  This certificate is proudly awarded to
+                </p>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
-              <Info title="Student ID" value={student.id} />
-              <Info title="Class" value={student.className} />
-              <Info title="School" value={student.school} />
-              <Info title="Score" value={student.score} />
-              <Info title="Rank" value={student.rank} />
-              <Info title="Certificate ID" value={student.certificateId} />
-            </div>
+                <h3 className="mt-3 text-6xl font-extrabold text-green-700">
+                  {student.name}
+                </h3>
 
-            <div className="mt-12 grid gap-8 md:grid-cols-3 md:items-end">
-              <div className="rounded-2xl border-2 border-dashed border-slate-400 p-6 text-center">
-                <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500">
-                  QR CODE
+                <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-slate-700">
+                  For successfully achieving in the SmartIndia.club Educational
+                  Skill Tournament and demonstrating learning, confidence,
+                  participation, digital awareness and future-ready skill growth.
+                </p>
+              </div>
+
+              <div className="mt-8 grid grid-cols-3 gap-4">
+                <Info title="Student ID" value={student.student_id} />
+                <Info title="Class" value={student.class_name} />
+                <Info title="School" value={student.school_name} />
+                <Info title="Score" value={student.score} />
+                <Info title="Rank" value={student.rank} />
+                <Info title="Certificate ID" value={student.certificate_id} />
+              </div>
+
+              <div className="mt-10 grid grid-cols-3 items-end gap-8">
+                <div className="text-center">
+                  <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-xl border bg-white p-2">
+                    <QRCodeSVG
+                      value={`https://smartindia-club.vercel.app/certificate/${student.certificate_id}`}
+                      size={110}
+                    />
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">
+                    Scan to verify certificate
+                  </p>
                 </div>
-                <p className="mt-3 text-sm text-slate-500">
-                  Scan to verify certificate
-                </p>
+
+                <div className="text-center">
+                  <p className="text-sm text-slate-500">Digitally issued by</p>
+                  <h4 className="mt-2 text-2xl font-bold text-slate-900">
+                    SmartIndia.club
+                  </h4>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Verified Educational Skill Certificate
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="mx-auto h-[2px] w-64 bg-slate-400" />
+                  <p className="mt-3 font-bold text-slate-900">
+                    Hashmat Khan
+                  </p>
+                  <p className="text-sm text-slate-500">
+                    Founder, SmartIndia.club
+                  </p>
+                </div>
               </div>
 
-              <div className="text-center">
-                <p className="text-sm text-slate-500">
-                  This certificate is digitally issued by
+              <div className="mt-8 border-t pt-4 text-center text-xs text-slate-500">
+                <p>
+                  Website: smartindia-club.vercel.app | Email:
+                  contact.smartindia369@gmail.com
                 </p>
-                <h4 className="mt-2 text-2xl font-bold text-slate-900">
-                  SmartIndia.club
-                </h4>
-              </div>
-
-              <div className="text-center">
-                <div className="mx-auto h-[2px] w-56 bg-slate-400" />
-                <p className="mt-3 font-bold text-slate-900">
-                  Founder, SmartIndia.club
+                <p>
+                  This certificate is digitally issued and can be verified using
+                  the QR code or certificate ID.
                 </p>
               </div>
-            </div>
-
-            <div className="mt-10 border-t pt-5 text-center text-sm text-slate-500">
-              <p>Website: smartindia-club.vercel.app</p>
-              <p>Email: contact.smartindia369@gmail.com</p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-4">
+          <PrintButton />
+
+          <Link
+            href="/admin"
+            className="rounded-xl border border-slate-600 px-6 py-3 font-bold text-white hover:bg-slate-800"
+          >
+            Back to Admin
+          </Link>
         </div>
       </section>
     </main>
   );
 }
 
-function Info({ title, value }: { title: string; value: string }) {
+function Info({ title, value }: { title: string; value: string | number }) {
   return (
-    <div className="rounded-xl bg-slate-100 p-4 text-center">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
       <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
         {title}
       </p>

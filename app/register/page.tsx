@@ -1,4 +1,44 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+
 export default function RegisterPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+
+    const studentId = `SIC-${Date.now()}`;
+    const certificateId = `SIC-CERT-${Date.now()}`;
+
+    const studentData = {
+      student_id: studentId,
+      name: String(formData.get("name")),
+      class_name: String(formData.get("class_name")),
+      school_name: String(formData.get("school_name")),
+      score: 0,
+      rank: "Pending",
+      certificate_id: certificateId,
+    };
+
+    const { error } = await supabase.from("students").insert([studentData]);
+
+    setLoading(false);
+
+    if (error) {
+      alert("Registration failed: " + error.message);
+      return;
+    }
+
+    router.push(`/success?studentId=${studentId}`);
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto max-w-5xl px-6 py-16">
@@ -15,7 +55,7 @@ export default function RegisterPage() {
         </p>
 
         <form
-          action="/success"
+          onSubmit={handleSubmit}
           className="mt-10 grid gap-5 rounded-3xl bg-slate-900 p-8 md:grid-cols-2"
         >
           <div>
@@ -23,6 +63,7 @@ export default function RegisterPage() {
               Student Full Name
             </label>
             <input
+              name="name"
               required
               className="w-full rounded-xl p-3 text-black"
               placeholder="Enter student name"
@@ -30,10 +71,12 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-semibold">
-              Class
-            </label>
-            <select required className="w-full rounded-xl p-3 text-black">
+            <label className="mb-2 block text-sm font-semibold">Class</label>
+            <select
+              name="class_name"
+              required
+              className="w-full rounded-xl p-3 text-black"
+            >
               <option value="">Select class</option>
               <option>Class 3</option>
               <option>Class 4</option>
@@ -51,6 +94,7 @@ export default function RegisterPage() {
               School / Coaching Name
             </label>
             <input
+              name="school_name"
               required
               className="w-full rounded-xl p-3 text-black"
               placeholder="Enter school or coaching name"
@@ -62,6 +106,7 @@ export default function RegisterPage() {
               Parent Phone Number
             </label>
             <input
+              name="parent_phone"
               required
               className="w-full rounded-xl p-3 text-black"
               placeholder="Enter parent phone number"
@@ -73,6 +118,7 @@ export default function RegisterPage() {
               Email Address
             </label>
             <input
+              name="email"
               type="email"
               className="w-full rounded-xl p-3 text-black"
               placeholder="Enter email address"
@@ -80,10 +126,9 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-semibold">
-              City
-            </label>
+            <label className="mb-2 block text-sm font-semibold">City</label>
             <input
+              name="city"
               required
               className="w-full rounded-xl p-3 text-black"
               placeholder="Enter city name"
@@ -112,7 +157,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div className="md:col-span-2 rounded-2xl bg-slate-800 p-5">
+          <div className="rounded-2xl bg-slate-800 p-5 md:col-span-2">
             <label className="flex gap-3 text-sm text-slate-300">
               <input required type="checkbox" className="mt-1" />
               I confirm that the entered details are correct and I understand
@@ -120,8 +165,11 @@ export default function RegisterPage() {
             </label>
           </div>
 
-          <button className="md:col-span-2 rounded-xl bg-green-500 p-3 font-bold text-slate-950 hover:bg-green-400">
-            Submit Registration
+          <button
+            disabled={loading}
+            className="rounded-xl bg-green-500 p-3 font-bold text-slate-950 hover:bg-green-400 disabled:opacity-60 md:col-span-2"
+          >
+            {loading ? "Submitting..." : "Submit Registration"}
           </button>
         </form>
       </section>

@@ -1,29 +1,24 @@
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
-export default function AdminPage() {
-  const students = [
-    {
-      id: "SIC-2026-001",
-      name: "Aarav Sharma",
-      className: "Class 8",
-      school: "Demo School",
-      payment: "Paid",
-    },
-    {
-      id: "SIC-2026-002",
-      name: "Zoya Khan",
-      className: "Class 7",
-      school: "Demo School",
-      payment: "Pending",
-    },
-    {
-      id: "SIC-2026-003",
-      name: "Rohan Patil",
-      className: "Class 9",
-      school: "Demo School",
-      payment: "Paid",
-    },
-  ];
+export default async function AdminPage() {
+  const { data: students, error } = await supabase
+    .from("students")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const totalStudents = students?.length || 0;
+  const paidStudents = 0;
+  const collection = paidStudents * 50;
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-slate-950 px-6 py-16 text-white">
+        <h1 className="text-4xl font-bold">Admin Error</h1>
+        <p className="mt-4 text-red-400">{error.message}</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -37,21 +32,19 @@ export default function AdminPage() {
         </h1>
 
         <p className="mt-4 max-w-3xl text-slate-300">
-          Manage student registrations, payment status, tournaments, questions,
-          results, certificates and platform announcements.
+          Manage real student registrations, payment status, tournaments,
+          results and certificates.
         </p>
 
         <div className="mt-8 grid gap-5 md:grid-cols-4">
           <StatCard title="Target Students" value="140" />
-          <StatCard title="Registered" value="3 Demo" />
-          <StatCard title="Paid Students" value="2 Demo" />
-          <StatCard title="Collection" value="₹100 Demo" />
+          <StatCard title="Registered" value={String(totalStudents)} />
+          <StatCard title="Paid Students" value={String(paidStudents)} />
+          <StatCard title="Collection" value={`₹${collection}`} />
         </div>
 
         <div className="mt-10 rounded-3xl bg-slate-900 p-6">
-          <h2 className="text-2xl font-bold">
-            Recent Registrations
-          </h2>
+          <h2 className="text-2xl font-bold">Recent Registrations</h2>
 
           <div className="mt-6 overflow-x-auto">
             <table className="w-full text-left">
@@ -61,28 +54,54 @@ export default function AdminPage() {
                   <th className="p-4">Name</th>
                   <th className="p-4">Class</th>
                   <th className="p-4">School</th>
-                  <th className="p-4">Payment</th>
+                  <th className="p-4">Score</th>
+                  <th className="p-4">Rank</th>
+                  <th className="p-4">Certificate</th>
                 </tr>
               </thead>
 
               <tbody>
-                {students.map((student) => (
+                {students?.map((student) => (
                   <tr key={student.id} className="border-t border-slate-800">
-                    <td className="p-4 font-bold">{student.id}</td>
+                    <td className="p-4 font-bold">
+                      {student.student_id}
+                    </td>
+
                     <td className="p-4">{student.name}</td>
-                    <td className="p-4">{student.className}</td>
-                    <td className="p-4">{student.school}</td>
-                    <td
-                      className={`p-4 font-bold ${
-                        student.payment === "Paid"
-                          ? "text-green-400"
-                          : "text-yellow-400"
-                      }`}
-                    >
-                      {student.payment}
+
+                    <td className="p-4">{student.class_name}</td>
+
+                    <td className="p-4">{student.school_name}</td>
+
+                    <td className="p-4 text-green-400">
+                      {student.score ?? 0}
+                    </td>
+
+                    <td className="p-4 text-yellow-400">
+                      {student.rank || "Pending"}
+                    </td>
+
+                    <td className="p-4">
+                      <Link
+                        href={`/certificate/${student.certificate_id}`}
+                        className="font-bold text-green-400 hover:underline"
+                      >
+                        View
+                      </Link>
                     </td>
                   </tr>
                 ))}
+
+                {students?.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="p-6 text-center text-slate-400"
+                    >
+                      No registrations found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -93,7 +112,10 @@ export default function AdminPage() {
           <AdminAction title="Add Questions" href="/admin/questions" />
           <AdminAction title="Students Management" href="/admin/students" />
           <AdminAction title="Results Management" href="/admin/results" />
-          <AdminAction title="Generate Certificates" href="/admin/certificates" />
+          <AdminAction
+            title="Generate Certificates"
+            href="/admin/certificates"
+          />
           <AdminAction title="Announcements" href="/announcements" />
         </div>
       </section>
