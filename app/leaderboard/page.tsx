@@ -1,46 +1,19 @@
-export default function LeaderboardPage() {
-  const students = [
-    {
-      rank: 1,
-      name: "Aarav Sharma",
-      className: "Class 8",
-      school: "Demo School",
-      score: 95,
-      status: "Top Performer",
-    },
-    {
-      rank: 2,
-      name: "Zoya Khan",
-      className: "Class 7",
-      school: "Demo School",
-      score: 90,
-      status: "Top Performer",
-    },
-    {
-      rank: 3,
-      name: "Rohan Patil",
-      className: "Class 9",
-      school: "Demo School",
-      score: 86,
-      status: "Top Performer",
-    },
-    {
-      rank: 4,
-      name: "Sara Shaikh",
-      className: "Class 6",
-      school: "Demo School",
-      score: 82,
-      status: "Selected",
-    },
-    {
-      rank: 5,
-      name: "Kabir Ansari",
-      className: "Class 10",
-      school: "Demo School",
-      score: 78,
-      status: "Selected",
-    },
-  ];
+// app/leaderboard/page.tsx
+import { supabase } from "@/lib/supabase";
+
+export default async function LeaderboardPage() {
+  const { data: students, error } = await supabase
+    .from("students")
+    .select("*")
+    .order("score", { ascending: false });
+
+  // Handle error or no data
+  if (error) {
+    console.error("Error fetching leaderboard:", error);
+  }
+
+  const topThree = students?.slice(0, 3) || [];
+  const allStudents = students || [];
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -49,19 +22,46 @@ export default function LeaderboardPage() {
           Tournament Results
         </p>
 
-        <h1 className="mt-2 text-4xl font-bold">Leaderboard</h1>
-
+        <h1 className="mt-2 text-4xl font-bold">Live Leaderboard</h1>
         <p className="mt-3 text-slate-300">
-          Students are ranked based on score, accuracy and completion time.
+          Real-time ranking based on student scores.
         </p>
 
-        <div className="mt-8 grid gap-5 md:grid-cols-4">
-          <StatCard title="Total Participants" value="140 Target" />
-          <StatCard title="Top Selection" value="Top 5/Class" />
-          <StatCard title="Evaluation" value="Score + Time" />
-          <StatCard title="Certificate" value="Available" />
+        {/* Top 3 Podium */}
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {topThree.map((student, index) => (
+            <div
+              key={student.id}
+              className="rounded-3xl bg-slate-900 p-6 text-center"
+            >
+              <div className="text-5xl">
+                {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
+              </div>
+
+              <h2 className="mt-4 text-2xl font-bold">{student.name}</h2>
+              <p className="text-slate-400">{student.school_name}</p>
+
+              <p className="mt-3 text-xl font-bold text-green-400">
+                {student.score ?? 0}/100
+              </p>
+
+              <p className="mt-2 text-yellow-400">Rank #{index + 1}</p>
+            </div>
+          ))}
         </div>
 
+        {/* Stats */}
+        <div className="mt-8 grid gap-5 md:grid-cols-4">
+          <StatCard
+            title="Total Participants"
+            value={String(allStudents.length)}
+          />
+          <StatCard title="Evaluation" value="Score Based" />
+          <StatCard title="Certificates" value="Available" />
+          <StatCard title="Leaderboard" value="Live" />
+        </div>
+
+        {/* Full Leaderboard Table */}
         <div className="mt-10 overflow-x-auto rounded-3xl bg-slate-900 shadow-xl">
           <table className="w-full text-left">
             <thead className="bg-slate-800">
@@ -71,34 +71,47 @@ export default function LeaderboardPage() {
                 <th className="p-4">Class</th>
                 <th className="p-4">School</th>
                 <th className="p-4">Score</th>
-                <th className="p-4">Status</th>
+                <th className="p-4">Performance</th>
               </tr>
             </thead>
-
             <tbody>
-              {students.map((student) => (
-                <tr key={student.rank} className="border-t border-slate-800">
-                  <td className="p-4 font-bold">#{student.rank}</td>
+              {allStudents.map((student, index) => (
+                <tr
+                  key={student.id}
+                  className="border-t border-slate-800 hover:bg-slate-800/50"
+                >
+                  <td className="p-4 font-bold">#{index + 1}</td>
                   <td className="p-4">{student.name}</td>
-                  <td className="p-4">{student.className}</td>
-                  <td className="p-4">{student.school}</td>
+                  <td className="p-4">{student.class_name}</td>
+                  <td className="p-4">{student.school_name}</td>
                   <td className="p-4 font-bold text-green-400">
-                    {student.score}/100
+                    {student.score ?? 0}/100
                   </td>
                   <td className="p-4 font-bold text-yellow-400">
-                    {student.status}
+                    {student.performance || "Participant"}
                   </td>
                 </tr>
               ))}
+
+              {allStudents.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="p-6 text-center text-slate-400"
+                  >
+                    No results available yet.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         <div className="mt-8 rounded-3xl bg-slate-900 p-6">
-          <h2 className="text-2xl font-bold">Selection Rule</h2>
+          <h2 className="text-2xl font-bold">Ranking Rule</h2>
           <p className="mt-3 text-slate-300">
-            From each school, the top 5 winners will be selected from every
-            class based on score, accuracy and completion time.
+            Students are automatically ranked according to their score. Higher
+            score means higher rank.
           </p>
         </div>
       </section>
@@ -106,7 +119,13 @@ export default function LeaderboardPage() {
   );
 }
 
-function StatCard({ title, value }: { title: string; value: string }) {
+function StatCard({
+  title,
+  value,
+}: {
+  title: string;
+  value: string;
+}) {
   return (
     <div className="rounded-2xl bg-slate-900 p-5">
       <p className="text-sm text-slate-400">{title}</p>

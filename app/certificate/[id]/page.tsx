@@ -1,4 +1,4 @@
-
+// app/certificate/[id]/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
@@ -12,13 +12,14 @@ export default async function DynamicCertificatePage({
 }) {
   const { id } = await params;
 
- const { data: student } = await supabase
-  .from("students")
-  .select("*")
-  .eq("certificate_id", id)
-  .single();
+  // Single query
+  const { data: student, error } = await supabase
+    .from("students")
+    .select("*")
+    .eq("certificate_id", id)
+    .single();
 
-  if (!student) {
+  if (error || !student) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-16 text-white">
         <section className="mx-auto max-w-4xl text-center">
@@ -36,6 +37,8 @@ export default async function DynamicCertificatePage({
       </main>
     );
   }
+
+  const isPaid = student.payment_status === "Paid";
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
@@ -74,6 +77,24 @@ export default async function DynamicCertificatePage({
                   Certificate of Achievement
                 </h2>
 
+                {student.performance === "Gold Performer" && (
+                  <div className="mt-4 inline-block rounded-full bg-yellow-100 px-6 py-2 font-bold text-yellow-700">
+                    🥇 Gold Performer
+                  </div>
+                )}
+
+                {student.performance === "Silver Performer" && (
+                  <div className="mt-4 inline-block rounded-full bg-gray-100 px-6 py-2 font-bold text-gray-700">
+                    🥈 Silver Performer
+                  </div>
+                )}
+
+                {student.performance === "Bronze Performer" && (
+                  <div className="mt-4 inline-block rounded-full bg-orange-100 px-6 py-2 font-bold text-orange-700">
+                    🥉 Bronze Performer
+                  </div>
+                )}
+
                 <p className="mt-4 text-lg text-slate-600">
                   This certificate is proudly awarded to
                 </p>
@@ -93,8 +114,12 @@ export default async function DynamicCertificatePage({
                 <Info title="Student ID" value={student.student_id} />
                 <Info title="Class" value={student.class_name} />
                 <Info title="School" value={student.school_name} />
-                <Info title="Score" value={student.score} />
-                <Info title="Rank" value={student.rank} />
+                <Info title="Score" value={student.score ?? 0} />
+                <Info title="Rank" value={student.rank || "Pending"} />
+                <Info
+                  title="Performance"
+                  value={student.performance || "Pending"}
+                />
                 <Info title="Certificate ID" value={student.certificate_id} />
               </div>
 
@@ -132,6 +157,12 @@ export default async function DynamicCertificatePage({
                 </div>
               </div>
 
+              <div className="mt-6 text-center">
+                <p className="text-sm text-slate-500">
+                  Issued On: {new Date().toLocaleDateString()}
+                </p>
+              </div>
+
               <div className="mt-8 border-t pt-4 text-center text-xs text-slate-500">
                 <p>
                   Website: smartindia-club.vercel.app | Email:
@@ -147,7 +178,13 @@ export default async function DynamicCertificatePage({
         </div>
 
         <div className="mt-8 flex flex-wrap gap-4">
-          <PrintButton />
+          {isPaid ? (
+            <PrintButton />
+          ) : (
+            <div className="rounded-xl bg-red-100 px-6 py-3 font-bold text-red-700">
+              Payment Pending - Certificate Download Locked
+            </div>
+          )}
 
           <Link
             href="/admin"

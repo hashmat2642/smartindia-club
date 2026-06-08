@@ -7,9 +7,14 @@ export default async function AdminPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  const totalStudents = students?.length || 0;
-  const paidStudents = 0;
-  const collection = paidStudents * 50;
+const totalStudents = students?.length || 0;
+
+const paidStudents =
+  students?.filter(
+    (student) => student.payment_status === "Paid"
+  ).length || 0;
+
+const collection = paidStudents * 50;
 
   if (error) {
     return (
