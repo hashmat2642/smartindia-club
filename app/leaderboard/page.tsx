@@ -87,9 +87,31 @@ export default async function LeaderboardPage() {
                   <td className="p-4 font-bold text-green-400">
                     {student.score ?? 0}/100
                   </td>
-                  <td className="p-4 font-bold text-yellow-400">
-                    {student.performance || "Participant"}
-                  </td>
+                 <td className="p-4 font-bold">
+  {student.performance === "Gold Performer" && (
+    <span className="text-yellow-400">
+      🥇 Gold Performer
+    </span>
+  )}
+
+  {student.performance === "Silver Performer" && (
+    <span className="text-gray-300">
+      🥈 Silver Performer
+    </span>
+  )}
+
+  {student.performance === "Bronze Performer" && (
+    <span className="text-orange-400">
+      🥉 Bronze Performer
+    </span>
+  )}
+
+  {!student.performance && (
+    <span className="text-slate-400">
+      Participant
+    </span>
+  )}
+</td>
                 </tr>
               ))}
 
