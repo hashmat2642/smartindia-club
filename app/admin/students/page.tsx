@@ -1,33 +1,23 @@
-export default function AdminStudentsPage() {
-  const students = [
-    {
-      id: "HDC-001",
-      name: "Student A",
-      className: "Class 8",
-      school: "Demo School",
-      phone: "98XXXXXX01",
-      payment: "Paid",
-      status: "Registered",
-    },
-    {
-      id: "HDC-002",
-      name: "Student B",
-      className: "Class 7",
-      school: "Demo School",
-      phone: "98XXXXXX02",
-      payment: "Pending",
-      status: "Waiting",
-    },
-    {
-      id: "HDC-003",
-      name: "Student C",
-      className: "Class 9",
-      school: "Demo School",
-      phone: "98XXXXXX03",
-      payment: "Paid",
-      status: "Registered",
-    },
-  ];
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import DeleteStudentButton from "@/components/DeleteStudentButton";
+
+export default async function AdminStudentsPage() {
+
+const { data: students } = await supabase
+  .from("students")
+  .select("*")
+  .order("created_at", { ascending: false });
+
+const totalStudents = students?.length || 0;
+
+const paidStudents =
+  students?.filter(
+    (s) => s.payment_status === "Paid"
+  ).length || 0;
+
+const pendingStudents =
+  totalStudents - paidStudents;
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -46,16 +36,34 @@ export default function AdminStudentsPage() {
         </p>
 
         <div className="mt-8 grid gap-5 md:grid-cols-4">
-          <StatCard title="Total Students" value="3 Demo" />
-          <StatCard title="Paid Students" value="2 Demo" />
-          <StatCard title="Pending Payments" value="1 Demo" />
-          <StatCard title="Target" value="140 Students" />
+          <StatCard
+  title="Total Students"
+  value={String(totalStudents)}
+/>
+
+<StatCard
+  title="Paid Students"
+  value={String(paidStudents)}
+/>
+
+<StatCard
+  title="Pending Payments"
+  value={String(pendingStudents)}
+/>
+
+<StatCard
+  title="Target"
+  value="140 Students"
+/>
+
         </div>
 
         <div className="mt-10 overflow-x-auto rounded-3xl bg-slate-900 shadow-xl">
           <table className="w-full text-left">
             <thead className="bg-slate-800">
               <tr>
+                <th className="p-4">Edit</th>
+                <th className="p-4">Certificate</th>
                 <th className="p-4">Student ID</th>
                 <th className="p-4">Name</th>
                 <th className="p-4">Class</th>
@@ -67,23 +75,45 @@ export default function AdminStudentsPage() {
             </thead>
 
             <tbody>
-              {students.map((student) => (
+              {students?.map((student) => (
                 <tr key={student.id} className="border-t border-slate-800">
-                  <td className="p-4 font-bold">{student.id}</td>
+                  <td className="p-4">
+  <Link
+    href={`/admin/students/edit/${student.id}`}
+    className="font-bold text-blue-400"
+  >
+    Edit
+  </Link>
+</td>
+
+<td className="p-4">
+  <Link
+    href={`/certificate/${student.certificate_id}`}
+    className="font-bold text-green-400"
+  >
+    View
+  </Link>
+</td>
+
+<td className="p-4 font-bold">
+  {student.student_id}
+</td>
                   <td className="p-4">{student.name}</td>
-                  <td className="p-4">{student.className}</td>
-                  <td className="p-4">{student.school}</td>
-                  <td className="p-4">{student.phone}</td>
+                  <td className="p-4">{student.class_name}</td>
+                  <td className="p-4">{student.school_name}</td>
+                  <td className="p-4">{student.phone_number}</td>
+                  
                   <td
+                  
                     className={`p-4 font-bold ${
-                      student.payment === "Paid"
+                      student.payment_status === "Paid"
                         ? "text-green-400"
                         : "text-yellow-400"
                     }`}
                   >
-                    {student.payment}
+                    {student.payment_status || "Pending"}
                   </td>
-                  <td className="p-4">{student.status}</td>
+                  <td className="p-4">{student.status || "Registered"}</td>
                 </tr>
               ))}
             </tbody>

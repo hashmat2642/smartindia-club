@@ -9,13 +9,16 @@ export default function ExportPage() {
         </h1>
 
         <p className="mt-3 text-slate-300">
-          Download student records for reporting.
+          Download student records.
         </p>
 
         <div className="mt-10 rounded-3xl bg-slate-900 p-6">
-          <button className="rounded-xl bg-green-500 px-6 py-3 font-bold text-black">
-            Download CSV (Coming Soon)
-          </button>
+          <a
+            href="/api/export"
+            className="rounded-xl bg-green-500 px-6 py-3 font-bold text-black"
+          >
+            Download CSV
+          </a>
         </div>
 
         <Link

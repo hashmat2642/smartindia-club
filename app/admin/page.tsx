@@ -41,9 +41,11 @@ const topStudent =
           SmartIndia.club Admin Panel
         </p>
 
-        <h1 className="mt-2 text-5xl font-bold">
+       <h1 className="mt-2 text-5xl font-bold">
+  Tournament Management Dashboard
+</h1>
 
-          <form
+<form
   action={async (formData) => {
     "use server";
 
@@ -72,9 +74,6 @@ const topStudent =
     Search
   </button>
 </form>
-
-          Tournament Management Dashboard
-        </h1>
 
         <p className="mt-4 max-w-3xl text-slate-300">
           Manage real student registrations, payment status, tournaments,
@@ -171,9 +170,16 @@ const topStudent =
         <div className="mt-8 grid gap-5 md:grid-cols-3">
 
           <AdminAction
+  title="Announcement Management"
+  href="/admin/announcements"
+/>
+
+
+
+          <AdminAction
   title="Tournament Settings"
   href="/admin/tournaments"
-/>
+/> 
 
           <AdminAction
   title="Export Students"
@@ -187,9 +193,9 @@ const topStudent =
 
 <AdminAction
   title="Payments Management"
-  href="/payments"
+  href="/admin/payments"
 />
-          <AdminAction title="Create Tournament" href="/admin/tournaments" />
+          
           <AdminAction title="Add Questions" href="/admin/questions" />
           <AdminAction title="Students Management" href="/admin/students" />
           <AdminAction title="Results Management" href="/admin/results" />

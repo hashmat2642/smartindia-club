@@ -24,13 +24,23 @@ export default function ResultUpdateForm({
   async function updateResult() {
     setSaving(true);
 
+    let performanceLevel = "Participation";
+
+if (score >= 90) {
+  performanceLevel = "Gold Performer";
+} else if (score >= 75) {
+  performanceLevel = "Silver Performer";
+} else if (score >= 60) {
+  performanceLevel = "Bronze Performer";
+}
+
     const { error } = await supabase
       .from("students")
       .update({
-        score,
-        rank,
-        performance,
-      })
+  score,
+  rank,
+  performance: performanceLevel,
+})
       .eq("id", studentId);
 
     setSaving(false);
@@ -62,10 +72,11 @@ export default function ResultUpdateForm({
       />
 
       <select
-        value={performance}
-        onChange={(e) => setPerformance(e.target.value)}
-        className="rounded-xl p-3 text-black"
-      >
+  aria-label="Performance"
+  value={performance}
+  onChange={(e) => setPerformance(e.target.value)}
+  className="rounded-xl p-3 text-black"
+>
         <option>Pending</option>
         <option>Gold Performer</option>
         <option>Silver Performer</option>
