@@ -7,11 +7,16 @@ export default async function StudentPage({
 }) {
   const { id } = await params;
 
-  const { data: student } = await supabase
-    .from("students")
-    .select("*")
-    .eq("student_id", id)
-    .single();
+  const { data: students } = await supabase
+  .from("students")
+  .select("*");
+
+const student = students?.find(
+  (s) =>
+    s.student_id?.toLowerCase() === id.toLowerCase() ||
+    s.name?.toLowerCase().includes(id.toLowerCase()) ||
+    s.phone_number?.includes(id)
+);
 
   if (!student) {
     return (
@@ -29,14 +34,31 @@ export default async function StudentPage({
         {student.name}
       </h1>
 
-      <div className="mt-8 space-y-3">
-        <p>Student ID: {student.student_id}</p>
-        <p>Class: {student.class_name}</p>
-        <p>School: {student.school_name}</p>
-        <p>Payment: {student.payment_status}</p>
-        <p>Score: {student.score ?? 0}</p>
-        <p>Rank: {student.rank || "Pending"}</p>
-      </div>
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
+  <div className="rounded-xl bg-slate-900 p-4">
+    Student ID: {student.student_id}
+  </div>
+
+  <div className="rounded-xl bg-slate-900 p-4">
+    Class: {student.class_name}
+  </div>
+
+  <div className="rounded-xl bg-slate-900 p-4">
+    School: {student.school_name}
+  </div>
+
+  <div className="rounded-xl bg-slate-900 p-4">
+    Payment: {student.payment_status}
+  </div>
+
+  <div className="rounded-xl bg-slate-900 p-4">
+    Score: {student.score ?? 0}
+  </div>
+
+  <div className="rounded-xl bg-slate-900 p-4">
+    Rank: {student.rank || "Pending"}
+  </div>
+</div>
     </main>
   );
 }
