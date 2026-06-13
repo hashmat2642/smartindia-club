@@ -34,29 +34,59 @@ const student = students?.find(
         {student.name}
       </h1>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
-  <div className="rounded-xl bg-slate-900 p-4">
-    Student ID: {student.student_id}
+     <div className="mt-8 grid gap-5 md:grid-cols-2">
+
+  <div className="rounded-2xl bg-slate-900 p-5">
+    <p className="text-slate-400">Student ID</p>
+    <h2 className="text-xl font-bold">
+      {student.student_id}
+    </h2>
   </div>
 
-  <div className="rounded-xl bg-slate-900 p-4">
-    Class: {student.class_name}
+  <div className="rounded-2xl bg-slate-900 p-5">
+    <p className="text-slate-400">Class</p>
+    <h2 className="text-xl font-bold">
+      {student.class_name}
+    </h2>
   </div>
 
-  <div className="rounded-xl bg-slate-900 p-4">
-    School: {student.school_name}
+  <div className="rounded-2xl bg-slate-900 p-5">
+    <p className="text-slate-400">School</p>
+    <h2 className="text-xl font-bold">
+      {student.school_name}
+    </h2>
   </div>
 
-  <div className="rounded-xl bg-slate-900 p-4">
-    Payment: {student.payment_status}
+  <div className="rounded-2xl bg-slate-900 p-5">
+    <p className="text-slate-400">Payment Status</p>
+    <h2 className="text-xl font-bold text-green-400">
+      {student.payment_status || "Pending"}
+    </h2>
   </div>
 
-  <div className="rounded-xl bg-slate-900 p-4">
-    Score: {student.score ?? 0}
+  <div className="rounded-2xl bg-slate-900 p-5">
+    <p className="text-slate-400">Score</p>
+    <h2 className="text-xl font-bold text-green-400">
+      {student.score ?? 0}
+    </h2>
   </div>
 
-  <div className="rounded-xl bg-slate-900 p-4">
-    Rank: {student.rank || "Pending"}
+  <div className="rounded-2xl bg-slate-900 p-5">
+    <p className="text-slate-400">Rank</p>
+    <h2 className="text-xl font-bold text-yellow-400">
+      {student.rank || "Pending"}
+    </h2>
+  </div>
+
+</div>
+
+<div className="mt-8 rounded-3xl bg-slate-900 p-6">
+  <h2 className="text-2xl font-bold">
+    Achievement Badge
+  </h2>
+
+  <div className="mt-4 inline-block rounded-full bg-yellow-500 px-6 py-3 font-bold text-black">
+    🏆 SmartIndia Participant
   </div>
 </div>
     </main>
