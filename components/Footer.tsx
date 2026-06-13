@@ -1,19 +1,61 @@
+// components/Footer.tsx
+import Link from "next/link";
+
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-950 text-white">
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        <h2 className="text-xl font-bold text-green-400">
-          Healthy Digital Club
-        </h2>
+    <footer className="bg-slate-900 border-t border-slate-800 text-slate-400">
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div>
+            <h3 className="text-green-400 text-xl font-bold mb-3">
+              Healthy Digital Club
+            </h3>
+            <p className="text-sm leading-relaxed">
+              Empowering students through healthy digital habits and competitive learning.
+            </p>
+          </div>
 
-        <p className="mt-3 max-w-2xl text-sm text-slate-400">
-          A trusted educational ecosystem where students learn, compete,
-          improve confidence, and grow through healthy digital tournaments.
-        </p>
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/" className="hover:text-green-400 transition-colors">Home</Link></li>
+              <li><Link href="/about" className="hover:text-green-400 transition-colors">About Us</Link></li>
+              <li><Link href="/tournament" className="hover:text-green-400 transition-colors">Tournament</Link></li>
+              <li><Link href="/leaderboard" className="hover:text-green-400 transition-colors">Leaderboard</Link></li>
+            </ul>
+          </div>
 
-        <p className="mt-6 text-sm text-slate-500">
-          © 2026 Healthy Digital Club. All rights reserved.
-        </p>
+          {/* Resources */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/practice" className="hover:text-green-400 transition-colors">Practice Arena</Link></li>
+              <li><Link href="/rules" className="hover:text-green-400 transition-colors">Rules</Link></li>
+              <li><Link href="/faq" className="hover:text-green-400 transition-colors">FAQ</Link></li>
+              <li><Link href="/announcements" className="hover:text-green-400 transition-colors">Announcements</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Get In Touch</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/contact" className="hover:text-green-400 transition-colors">Contact Us</Link></li>
+              <li className="text-sm">Email: info@healthydigitalclub.com</li>
+              <li className="text-sm">Phone: +91 98765 43210</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs">
+          <p>© {new Date().getFullYear()} Healthy Digital Club. All Rights Reserved.</p>
+          <p className="mt-1">
+            Made with ❤️ for a healthier digital future
+          </p>
+        </div>
       </div>
     </footer>
   );

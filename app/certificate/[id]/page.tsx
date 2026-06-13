@@ -99,6 +99,10 @@ export default async function DynamicCertificatePage({
                   This certificate is proudly awarded to
                 </p>
 
+                <p className="mt-3 text-xl font-bold text-purple-700">
+  SmartIndia Educational Skill Tournament 2026
+</p>
+
                 <h3 className="mt-3 text-6xl font-extrabold text-green-700">
                   {student.name}
                 </h3>
