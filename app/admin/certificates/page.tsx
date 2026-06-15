@@ -161,11 +161,11 @@ export default function AdminCertificatePreviewPage() {
                   {selectedStudent.name}
                 </h3>
 
+                {/* FIX: Raw whitespace and dangling compilation text segment string wrapped cleanly */}
                 <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-slate-700">
-                  for successfully participating in the{" "}
+                  {"for successfully participating in the "}
                   <span className="font-semibold text-slate-900">SmartIndia.club Educational Tournament</span>{" "}
-                  and demonstrating exceptional dedication, algorithmic logic, logical thinking capabilities, 
-                  and core future-ready digital skill growth.
+                  {"and demonstrating exceptional dedication, algorithmic logic, logical thinking capabilities, and core future-ready digital skill growth."}
                 </p>
 
                 {/* Technical Metric Values Matrix */}

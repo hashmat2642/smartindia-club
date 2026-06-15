@@ -121,15 +121,14 @@ export default function Home() {
           />
         </div>
 
-        {/* Brand Mission Alignment Statement Layout */}
+        {/* Brand Mission Alignment Statement Layout — FIX: Text URL String wrapped inside curly brackets strictly */}
         <div className="mt-20 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-900/40 p-8 text-center border border-slate-800/50">
           <h2 className="text-3xl font-bold tracking-tight text-white">
             Turning Screen Time Into Skill Time
           </h2>
 
           <p className="mx-auto mt-4 max-w-3xl text-slate-300 text-base leading-relaxed">
-            SmartIndia.club is built fundamentally to guide students in utilizing technology productively for
-            accelerated learning, active confidence building, and structural digital skill growth.
+            {"SmartIndia.club is built fundamentally to guide students in utilizing technology productively for accelerated learning, active confidence building, and structural digital skill growth."}
           </p>
         </div>
       </section>

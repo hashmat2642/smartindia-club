@@ -81,7 +81,7 @@ export default async function AnalyticsPage() {
           </h1>
         </div>
 
-        {/* FIX: 8 Cards Grid System Balanced properly onto md:grid-cols-4 layout */}
+        {/* FIX: Rupee symbol entity brackets applied flawlessly inside value parameters */}
         <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-4">
           <Card title="Total Schools" value={String(totalSchools)} />
           <Card title="Top School" value={topSchool?.[0] || "N/A"} />
@@ -89,7 +89,7 @@ export default async function AnalyticsPage() {
           <Card title="Paid Students" value={String(paidStudents)} />
           <Card title="Pending Payments" value={String(pendingStudents)} />
           <Card title="Average Score" value={`${averageScore}/100`} />
-          <Card title="Total Collection" value={`₹${collection}`} />
+          <Card title="Total Collection" value={"₹" + String(collection)} />
           <Card title="Top Score" value={`${topStudent?.score || 0}/100`} />
         </div>
 
