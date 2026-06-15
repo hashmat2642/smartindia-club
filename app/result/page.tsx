@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function ResultPage() {
   return (
@@ -28,15 +28,20 @@ function ResultContent() {
   const searchParams = useSearchParams();
   const score = Number(searchParams.get("score")) || 0;
 
-  let performance = "Keep Practicing";
+  // Default parameters for standard participants
+  let performance = "Participation";
   let message = "Good start! Keep practicing and you will improve.";
 
-  if (score >= 80) {
-    performance = "Excellent Performance";
-    message = "Great work! You have strong understanding and confidence.";
-  } else if (score >= 50) {
-    performance = "Good Performance";
-    message = "Nice effort! You are improving. Keep learning and practicing.";
+  // Admin Rules validation logic ke sath sync kiya gaya hai
+  if (score >= 90) {
+    performance = "Gold Performer";
+    message = "Great work! You have shown outstanding understanding and confidence.";
+  } else if (score >= 75) {
+    performance = "Silver Performer";
+    message = "Excellent performance! Nice effort, you are doing great.";
+  } else if (score >= 60) {
+    performance = "Bronze Performer";
+    message = "Good effort! You are improving. Keep learning and practicing.";
   }
 
   return (

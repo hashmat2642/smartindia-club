@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 
 export default function ResultUpdateForm({
   studentId,
@@ -24,23 +24,24 @@ export default function ResultUpdateForm({
   async function updateResult() {
     setSaving(true);
 
-    let performanceLevel = "Participation";
+    let performanceLevel = performance;
 
-if (score >= 90) {
-  performanceLevel = "Gold Performer";
-} else if (score >= 75) {
-  performanceLevel = "Silver Performer";
-} else if (score >= 60) {
-  performanceLevel = "Bronze Performer";
-}
+    if (performance === "Pending" || !performance || performance === "Participation" || performance.includes("Performer")) {
+      if (performance === "Pending") {
+        if (score >= 90) performanceLevel = "Gold Performer";
+        else if (score >= 75) performanceLevel = "Silver Performer";
+        else if (score >= 60) performanceLevel = "Bronze Performer";
+        else performanceLevel = "Participation";
+      }
+    }
 
     const { error } = await supabase
       .from("students")
       .update({
-  score,
-  rank,
-  performance: performanceLevel,
-})
+        score: Number(score),
+        rank: rank,
+        performance: performanceLevel,
+      })
       .eq("id", studentId);
 
     setSaving(false);
@@ -55,39 +56,51 @@ if (score >= 90) {
   }
 
   return (
-    <div className="grid gap-3 md:grid-cols-4">
-      <input
-        type="number"
-        value={score}
-        onChange={(e) => setScore(Number(e.target.value))}
-        className="rounded-xl p-3 text-black"
-        placeholder="Score"
-      />
+    <div className="grid gap-3 md:grid-cols-4 items-center">
+      {/* Score Input Container */}
+      <div>
+        <input
+          type="number"
+          aria-label="Student Score"
+          value={score}
+          onChange={(e) => setScore(Number(e.target.value))}
+          className="w-full rounded-xl p-3 bg-white text-black font-semibold border border-slate-700/40 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+          placeholder="Score"
+        />
+      </div>
 
-      <input
-        value={rank}
-        onChange={(e) => setRank(e.target.value)}
-        className="rounded-xl p-3 text-black"
-        placeholder="Rank"
-      />
+      {/* Rank Input Container */}
+      <div>
+        <input
+          aria-label="Student Rank"
+          value={rank}
+          onChange={(e) => setRank(e.target.value)}
+          className="w-full rounded-xl p-3 bg-white text-black font-semibold border border-slate-700/40 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+          placeholder="Rank"
+        />
+      </div>
 
-      <select
-  aria-label="Performance"
-  value={performance}
-  onChange={(e) => setPerformance(e.target.value)}
-  className="rounded-xl p-3 text-black"
->
-        <option>Pending</option>
-        <option>Gold Performer</option>
-        <option>Silver Performer</option>
-        <option>Bronze Performer</option>
-        <option>Participation</option>
-      </select>
+      {/* Select Category Dropdown Container — HTML Entities Fixed here */}
+      <div>
+        <select
+          aria-label="Performance Category"
+          value={performance}
+          onChange={(e) => setPerformance(e.target.value)}
+          className="w-full rounded-xl p-3 bg-white text-black font-semibold border border-slate-700/40 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+        >
+          <option value="Pending">Pending / Auto Calculate</option>
+          <option value="Gold Performer">Gold Performer (&gt;=90)</option>
+          <option value="Silver Performer">Silver Performer (&gt;=75)</option>
+          <option value="Bronze Performer">Bronze Performer (&gt;=60)</option>
+          <option value="Participation">Participation (&lt;60)</option>
+        </select>
+      </div>
 
+      {/* Action Save Result Button */}
       <button
         onClick={updateResult}
         disabled={saving}
-        className="rounded-xl bg-green-500 p-3 font-bold text-slate-950 hover:bg-green-400"
+        className="w-full rounded-xl bg-green-500 p-3 font-bold text-slate-950 hover:bg-green-400 disabled:opacity-50 transition-colors shadow-md shadow-green-500/5"
       >
         {saving ? "Saving..." : "Save Result"}
       </button>

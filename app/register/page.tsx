@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -22,8 +22,11 @@ export default function RegisterPage() {
       name: String(formData.get("name")),
       class_name: String(formData.get("class_name")),
       school_name: String(formData.get("school_name")),
+      phone_number: String(formData.get("parent_phone")),
       score: 0,
       rank: "Pending",
+      payment_status: "Pending",
+      performance: "Participant",
       certificate_id: certificateId,
     };
 
@@ -58,11 +61,13 @@ export default function RegisterPage() {
           onSubmit={handleSubmit}
           className="mt-10 grid gap-5 rounded-3xl bg-slate-900 p-8 md:grid-cols-2"
         >
+          {/* Student Name */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">
+            <label htmlFor="student_name" className="mb-2 block text-sm font-semibold">
               Student Full Name
             </label>
             <input
+              id="student_name"
               name="name"
               required
               className="w-full rounded-xl p-3 text-black"
@@ -70,9 +75,11 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* Class Select - Mismatch / Accessibility Fixed */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">Class</label>
+            <label htmlFor="class_select" className="mb-2 block text-sm font-semibold">Class</label>
             <select
+              id="class_select"
               name="class_name"
               required
               className="w-full rounded-xl p-3 text-black"
@@ -89,11 +96,13 @@ export default function RegisterPage() {
             </select>
           </div>
 
+          {/* School Name */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">
+            <label htmlFor="school" className="mb-2 block text-sm font-semibold">
               School / Coaching Name
             </label>
             <input
+              id="school"
               name="school_name"
               required
               className="w-full rounded-xl p-3 text-black"
@@ -101,11 +110,13 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* Parent Phone */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">
+            <label htmlFor="parent_phone" className="mb-2 block text-sm font-semibold">
               Parent Phone Number
             </label>
             <input
+              id="parent_phone"
               name="parent_phone"
               required
               className="w-full rounded-xl p-3 text-black"
@@ -113,11 +124,13 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* Email Address */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">
+            <label htmlFor="student_email" className="mb-2 block text-sm font-semibold">
               Email Address
             </label>
             <input
+              id="student_email"
               name="email"
               type="email"
               className="w-full rounded-xl p-3 text-black"
@@ -125,9 +138,11 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* City */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">City</label>
+            <label htmlFor="student_city" className="mb-2 block text-sm font-semibold">City</label>
             <input
+              id="student_city"
               name="city"
               required
               className="w-full rounded-xl p-3 text-black"
@@ -135,33 +150,47 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* Tournament ReadOnly Fixed */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">
+            <label htmlFor="tournament_type" className="mb-2 block text-sm font-semibold">
               Tournament
             </label>
             <input
+              id="tournament_type"
               readOnly
               className="w-full rounded-xl bg-slate-200 p-3 text-black"
               value="Quiz + Logic + Coding Basics"
+              placeholder="Tournament Type"
             />
           </div>
 
+          {/* Registration Fee ReadOnly Fixed */}
           <div>
-            <label className="mb-2 block text-sm font-semibold">
+            <label htmlFor="reg_fee" className="mb-2 block text-sm font-semibold">
               Registration Fee
             </label>
             <input
+              id="reg_fee"
               readOnly
               className="w-full rounded-xl bg-slate-200 p-3 text-black"
               value="₹50"
+              placeholder="Registration Fee Amount"
             />
           </div>
 
+          {/* Checkbox Confirmation */}
           <div className="rounded-2xl bg-slate-800 p-5 md:col-span-2">
-            <label className="flex gap-3 text-sm text-slate-300">
-              <input required type="checkbox" className="mt-1" />
-              I confirm that the entered details are correct and I understand
-              that this tournament is an educational skill-based activity.
+            <label htmlFor="confirmation_checkbox" className="flex gap-3 text-sm text-slate-300">
+              <input 
+                id="confirmation_checkbox"
+                required 
+                type="checkbox" 
+                className="mt-1" 
+              />
+              <span>
+                I confirm that the entered details are correct and I understand
+                that this tournament is an educational skill-based activity.
+              </span>
             </label>
           </div>
 
