@@ -6,13 +6,14 @@ export default function Footer() {
     <footer className="bg-slate-900 border-t border-slate-800 text-slate-400">
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+          
+          {/* Brand Segment - Aligned with SmartIndia.club */}
           <div>
             <h3 className="text-green-400 text-xl font-bold mb-3">
-              Healthy Digital Club
+              SmartIndia.club
             </h3>
             <p className="text-sm leading-relaxed">
-              Empowering students through healthy digital habits and competitive learning.
+              Empowering students through healthy digital habits, logical thinking, and competitive learning.
             </p>
           </div>
 
@@ -38,20 +39,20 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact Details with Branded Domain Email */}
           <div>
             <h4 className="text-white font-semibold mb-4">Get In Touch</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/contact" className="hover:text-green-400 transition-colors">Contact Us</Link></li>
-              <li className="text-sm">Email: info@healthydigitalclub.com</li>
+              <li className="text-sm">Email: info@smartindia.club</li>
               <li className="text-sm">Phone: +91 98765 43210</li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar - Dynamic Year and Copyright Mapping */}
         <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs">
-          <p>© {new Date().getFullYear()} Healthy Digital Club. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} SmartIndia.club. All Rights Reserved.</p>
           <p className="mt-1">
             Made with ❤️ for a healthier digital future
           </p>

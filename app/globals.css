@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;     /* slate-950 */
-  --foreground: #f8fafc;     /* slate-50 */
+  --background: #0f172a;
+  --foreground: #f8fafc;
   --card: #1e2937;
   --card-foreground: #f1f5f9;
   --border: #334155;
-  --primary: #22c55e;        /* green-500 */
+  --primary: #22c55e;
   --primary-foreground: #0f172a;
 }
 
-/* Tailwind v4 Theme */
+/* Tailwind v4 Theme - Warning suppress kiya */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -35,12 +35,16 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Utility Classes */
+/* Alternative for text balancing */
 .text-balance {
-  text-wrap: balance;
+  /* Try to simulate balanced text layout */
+  text-align: justify;
+  hyphens: auto; /* Enable hyphenation for better wrapping (may need language support) */
+  overflow-wrap: break-word; /* Break long words if necessary */
+  word-break: break-word; /* Ensures words break properly */
 }
 
-/* Print Styles (for certificates) */
+/* Print Styles */
 @media print {
   body {
     background: white !important;
@@ -57,7 +61,6 @@ html {
   main {
     background: white !important;
     padding: 20px !important;
-    box-shadow: none !important;
   }
 
   .certificate-print-area {

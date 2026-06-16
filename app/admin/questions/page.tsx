@@ -20,9 +20,9 @@ if (error) {
           Question Bank
         </h1>
 
-        <p className="mt-3 text-slate-300">
-          Tournament Questions
-        </p>
+       <p className="mt-4 text-yellow-400">
+  Total Questions: {questions?.length || 0}
+</p>
 
         <div className="mt-10 rounded-3xl bg-slate-900 p-6">
           <table className="w-full text-left">

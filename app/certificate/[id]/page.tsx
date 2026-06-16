@@ -1,9 +1,9 @@
 // app/certificate/[id]/page.tsx
+import PrintButton from "@/components/PrintButton";
+import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
-import PrintButton from "@/components/PrintButton";
-import { supabase } from "@/lib/supabase";
 
 export default async function DynamicCertificatePage({
   params,
@@ -12,7 +12,7 @@ export default async function DynamicCertificatePage({
 }) {
   const { id } = await params;
 
-  // Single query
+  // Single query to check from Supabase
   const { data: student, error } = await supabase
     .from("students")
     .select("*")
@@ -100,8 +100,8 @@ export default async function DynamicCertificatePage({
                 </p>
 
                 <p className="mt-3 text-xl font-bold text-purple-700">
-  SmartIndia Educational Skill Tournament 2026
-</p>
+                  SmartIndia Educational Skill Tournament 2026
+                </p>
 
                 <h3 className="mt-3 text-6xl font-extrabold text-green-700">
                   {student.name}
@@ -163,7 +163,7 @@ export default async function DynamicCertificatePage({
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-slate-500">
-                  Issued On: {new Date().toLocaleDateString()}
+                  Issued On: 31 May 2026
                 </p>
               </div>
 

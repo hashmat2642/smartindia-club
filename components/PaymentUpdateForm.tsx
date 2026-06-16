@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 
 export default function PaymentUpdateForm({
   studentId,
@@ -34,10 +34,11 @@ export default function PaymentUpdateForm({
   return (
     <div className="flex gap-2">
       <select
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        className="rounded-lg p-2 text-black"
-      >
+  aria-label="Payment Status"
+  value={status}
+  onChange={(e) => setStatus(e.target.value)}
+  className="rounded-lg p-2 text-black"
+>
         <option>Pending</option>
         <option>Paid</option>
       </select>
