@@ -5,8 +5,8 @@ import { supabase } from "@/lib/supabase";
 import { students as mockStudents } from "@/app/data/students";
 import { 
   Search, Filter, Briefcase, Clock, 
-  ShieldCheck, CheckCircle2, X, Check, 
-  FileText, Sparkles, User, AlertCircle, Info, Lock
+  ShieldCheck, X, Check, 
+  FileText, Sparkles, User, AlertCircle, Lock
 } from "lucide-react";
 
 type Job = {
@@ -127,63 +127,66 @@ export default function CareersPage() {
 
   // Sync session details & applied jobs
   useEffect(() => {
-    // 1. Get applied list from localStorage
-    const savedApplied = localStorage.getItem("hdc_applied_jobs");
-    if (savedApplied) {
-      try {
-        setAppliedJobIds(JSON.parse(savedApplied));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    // 2. Pre-fill profile from current active session
-    const loggedId = localStorage.getItem("hdc_logged_student_id");
-    if (loggedId) {
-      const getProfile = async () => {
+    const timer = setTimeout(() => {
+      // 1. Get applied list from localStorage
+      const savedApplied = localStorage.getItem("hdc_applied_jobs");
+      if (savedApplied) {
         try {
-          const { data, error } = await supabase
-            .from("students")
-            .select("*")
-            .eq("student_id", loggedId)
-            .single();
+          setAppliedJobIds(JSON.parse(savedApplied));
+        } catch (e) {
+          console.error(e);
+        }
+      }
 
-          if (!error && data) {
-            const prof = {
-              name: data.name,
-              student_id: data.student_id,
-              class_name: data.class_name,
-              school_name: data.school_name
-            };
-            setStudentProfile(prof);
-            // Sync form variables
-            setApplicantName(prof.name);
-            setStudentId(prof.student_id);
-            setStudentClass(prof.class_name);
-            setStudentSchool(prof.school_name);
-          } else {
-            // Fallback mock check
-            const match = mockStudents.find((s) => s.student_id.toLowerCase() === loggedId.toLowerCase());
-            if (match) {
+      // 2. Pre-fill profile from current active session
+      const loggedId = localStorage.getItem("hdc_logged_student_id");
+      if (loggedId) {
+        const getProfile = async () => {
+          try {
+            const { data, error } = await supabase
+              .from("students")
+              .select("*")
+              .eq("student_id", loggedId)
+              .single();
+
+            if (!error && data) {
               const prof = {
-                name: match.name,
-                student_id: match.student_id,
-                class_name: match.class_name,
-                school_name: match.school_name
+                name: data.name,
+                student_id: data.student_id,
+                class_name: data.class_name,
+                school_name: data.school_name
               };
               setStudentProfile(prof);
+              // Sync form variables
               setApplicantName(prof.name);
               setStudentId(prof.student_id);
               setStudentClass(prof.class_name);
               setStudentSchool(prof.school_name);
+            } else {
+              // Fallback mock check
+              const match = mockStudents.find((s) => s.student_id.toLowerCase() === loggedId.toLowerCase());
+              if (match) {
+                const prof = {
+                  name: match.name,
+                  student_id: match.student_id,
+                  class_name: match.class_name,
+                  school_name: match.school_name
+                };
+                setStudentProfile(prof);
+                setApplicantName(prof.name);
+                setStudentId(prof.student_id);
+                setStudentClass(prof.class_name);
+                setStudentSchool(prof.school_name);
+              }
             }
+          } catch {
+            console.error("Could not fetch credentials, offline mode fallback");
           }
-        } catch {
-          console.error("Could not fetch credentials, offline mode fallback");
-        }
-      };
-      getProfile();
-    }
+        };
+        getProfile();
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const categories = ["All", "Excel & Data", "Sketching & Art", "Support & Calling", "Writing & Coding"];
