@@ -1,7 +1,7 @@
 // components/Navbar.tsx
 'use client';
 
-import { Menu, X, Circle, GraduationCap, ChevronDown, Info, HelpCircle, FileText, Bell, LogOut, UserCheck } from "lucide-react";
+import { Menu, X, Circle, GraduationCap, ChevronDown, Info, HelpCircle, FileText, Bell, LogOut, UserCheck, Briefcase } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -65,6 +65,7 @@ export default function Navbar() {
     { href: "/rules", label: "Tournament Rules", icon: <FileText className="w-4 h-4 text-green-400" /> },
     { href: "/faq", label: "FAQ & Support", icon: <HelpCircle className="w-4 h-4 text-green-400" /> },
     { href: "/announcements", label: "Announcements", icon: <Bell className="w-4 h-4 text-green-400" /> },
+    { href: "/careers", label: "Student Careers", icon: <Briefcase className="w-4 h-4 text-green-400" /> },
   ];
 
   return (
