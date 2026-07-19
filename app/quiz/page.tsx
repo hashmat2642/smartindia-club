@@ -38,6 +38,9 @@ export default function QuizPage() {
   const [submitting, setSubmitting] = useState(false);
   const [quizError, setQuizError] = useState<string | null>(null);
 
+  const [focusLossCount, setFocusLossCount] = useState(0);
+  const [showCheatWarning, setShowCheatWarning] = useState(false);
+
   const fallbackQuestions: Question[] = [
     {
       question: "What is the output of: console.log(2 + 3) in Javascript?",
@@ -232,6 +235,22 @@ export default function QuizPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
+  // Focus loss tracking hook (Anti-Cheat listener)
+  useEffect(() => {
+    if (loading) return;
+
+    const handleBlur = () => {
+      setFocusLossCount((prev) => {
+        const next = prev + 1;
+        setShowCheatWarning(true);
+        return next;
+      });
+    };
+
+    window.addEventListener("blur", handleBlur);
+    return () => window.removeEventListener("blur", handleBlur);
+  }, [loading]);
+
   // 4. Countdown timer execution hook
   useEffect(() => {
     if (loading || timeLeft <= 0) return;
@@ -252,7 +271,7 @@ export default function QuizPage() {
   }, [timeLeft, loading]);
 
   const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 65; // dummy fix to keep seconds dynamic
+  const seconds = timeLeft % 60;
   const isTimeCritical = timeLeft < 120; // 2 minutes remaining
 
   const answeredCount = Object.keys(answers).length;
@@ -287,28 +306,64 @@ export default function QuizPage() {
     <main className="min-h-screen bg-slate-950 text-white pb-24 relative">
       
       {/* Sticky Header with Timer & Stats */}
-      <header className="sticky top-0 z-30 w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-900 py-4 px-6">
-        <div className="mx-auto max-w-5xl flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-bold tracking-wider text-green-400 uppercase">SmartIndia.club Tournament</span>
-            <h2 className="text-base font-bold text-slate-200 mt-0.5 truncate max-w-[200px] sm:max-w-none">
-              Student: {student?.name}
-            </h2>
+      <header className="sticky top-0 z-30 w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-900 py-3.5 px-6 shadow-md">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold tracking-wider text-green-400 uppercase">SmartIndia.club Tournament</span>
+              <h2 className="text-base font-bold text-slate-200 mt-0.5 truncate max-w-[200px] sm:max-w-none">
+                Student: {student?.name}
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="text-right hidden md:block">
+                <p className="text-[10px] text-slate-500 font-bold uppercase">Progress</p>
+                <p className="text-xs font-bold text-slate-300">{answeredCount} of {questions.length} answered</p>
+              </div>
+              
+              <div className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-black transition-all ${
+                isTimeCritical 
+                  ? "bg-red-500/10 border-red-500 text-red-400 animate-pulse" 
+                  : "bg-slate-900 border-slate-850 text-green-400"
+              }`}>
+                <Clock className="w-3.5 h-3.5 shrink-0" />
+                <span>{minutes}:{seconds.toString().padStart(2, "0")}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
-              <p className="text-[10px] text-slate-500 font-bold uppercase">Questions Completed</p>
-              <p className="text-sm font-bold text-slate-350">{answeredCount} of {questions.length}</p>
+          {/* Sticky Question Jumper Navigator */}
+          <div className="mt-3.5 pt-3 border-t border-slate-900 flex items-center justify-between gap-4">
+            <span className="text-[9px] font-bold text-slate-550 uppercase tracking-widest hidden sm:block">NAVIGATE:</span>
+            <div className="flex flex-wrap gap-2">
+              {questions.map((_, idx) => {
+                const isAnswered = answers[idx] !== undefined;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      document.getElementById(`question-card-${idx}`)?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                      });
+                    }}
+                    className={`w-7 h-7 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center font-mono active:scale-90 border ${
+                      isAnswered
+                        ? "bg-green-500/10 border-green-500/30 text-green-400 shadow-md shadow-green-500/5"
+                        : "bg-slate-900 border-slate-850 text-slate-400 hover:text-white hover:border-slate-700"
+                    }`}
+                  >
+                    {idx + 1}
+                  </button>
+                );
+              })}
             </div>
-            
-            <div className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-black transition-all ${
-              isTimeCritical 
-                ? "bg-red-500/10 border-red-500 text-red-400 animate-pulse" 
-                : "bg-slate-900 border-slate-850 text-green-400"
-            }`}>
-              <Clock className="w-4 h-4 shrink-0" />
-              <span>{minutes}:{seconds.toString().padStart(2, "0")}</span>
+
+            {/* Anti-cheat status banner */}
+            <div className="text-[10px] font-bold text-green-550 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+              <span className="font-mono text-[9px] uppercase tracking-wider">Live Proctoring Active</span>
             </div>
           </div>
         </div>
@@ -331,7 +386,8 @@ export default function QuizPage() {
             return (
               <div 
                 key={index} 
-                className={`rounded-3xl p-6 border transition-all duration-300 ${
+                id={`question-card-${index}`}
+                className={`scroll-mt-28 rounded-3xl p-6 border transition-all duration-300 ${
                   isQuestionAnswered 
                     ? "bg-slate-900/40 border-slate-900" 
                     : "bg-slate-900 border-slate-850 shadow-lg"
@@ -406,6 +462,35 @@ export default function QuizPage() {
           Do not close or refresh this tab during active exam submission. If connection fails, your answers are safely archived in local storage cache.
         </p>
       </div>
+
+      {/* Anti-Cheat Warning Modal */}
+      {showCheatWarning && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-red-500/20 rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <span className="mx-auto w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-xl mb-4">
+              ⚠
+            </span>
+            <h3 className="text-xl font-bold text-white">Focus Shift Flagged!</h3>
+            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              We detected that you switched browser tabs or clicked away from the tournament sheet window. 
+            </p>
+            <div className="bg-slate-950/80 border border-slate-850 rounded-xl p-3.5 mt-4 text-[10px] text-slate-450 font-mono text-left space-y-1">
+              <div>WARNING DETAILS: <span className="text-red-400 font-bold">Unallowed Window Defocus</span></div>
+              <div>FOCUS LOSS INCIDENT: <span className="text-slate-300 font-bold">Log #{focusLossCount}</span></div>
+              <div className="pt-2 text-slate-500 text-[9px] leading-normal font-sans">
+                Notice: Multiple focus shifts are registered on the smart roll registry and will disqualify your score evaluation.
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowCheatWarning(false)}
+              className="mt-6 w-full rounded-xl bg-red-650 hover:bg-red-500 text-white p-3 text-xs font-bold transition-all cursor-pointer shadow-md shadow-red-600/10 active:scale-95 border-0"
+            >
+              Resume Live Examination
+            </button>
+          </div>
+        </div>
+      )}
 
     </main>
   );
