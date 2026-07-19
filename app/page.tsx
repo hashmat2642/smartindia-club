@@ -2,7 +2,7 @@ import Link from "next/link";
 import { 
   Users, CreditCard, Award, ArrowRight, 
   ShieldCheck, Trophy, Sparkles, BookOpen, 
-  TrendingUp, BrainCircuit, Activity, Lock, CheckCircle2 
+  BrainCircuit, Activity, Lock, CheckCircle2 
 } from "lucide-react";
 
 // Structural Helper Sub-component: InfoWidget with Premium Styling
