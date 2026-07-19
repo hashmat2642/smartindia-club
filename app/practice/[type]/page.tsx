@@ -269,14 +269,18 @@ export default function InteractivePracticeLab({ params }: { params: Promise<{ t
 
             <p className="text-slate-300 max-w-md mx-auto leading-relaxed">{feedback}</p>
 
-            <div className="mt-8 grid grid-cols-2 gap-4 w-full border-t border-slate-900 pt-6">
+            <div className="mt-8 grid grid-cols-3 gap-4 w-full border-t border-slate-900 pt-6">
               <div className="text-center p-3 rounded-2xl bg-slate-900/60 border border-slate-900">
-                <p className="text-xs text-slate-400 font-semibold uppercase">Correct Answers</p>
-                <p className="text-2xl font-bold text-green-400 mt-1">{score} / {questions.length}</p>
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Correct</p>
+                <p className="text-xl font-bold text-green-400 mt-1">{score} / {questions.length}</p>
               </div>
               <div className="text-center p-3 rounded-2xl bg-slate-900/60 border border-slate-900">
-                <p className="text-xs text-slate-400 font-semibold uppercase">Time Taken</p>
-                <p className="text-2xl font-bold text-slate-200 mt-1">Practice Mode</p>
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Incorrect</p>
+                <p className="text-xl font-bold text-red-400 mt-1">{answeredWrong}</p>
+              </div>
+              <div className="text-center p-3 rounded-2xl bg-slate-900/60 border border-slate-900">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Mode</p>
+                <p className="text-xl font-bold text-slate-200 mt-1">Practice</p>
               </div>
             </div>
           </div>
