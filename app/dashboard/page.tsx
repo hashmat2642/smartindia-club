@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { students as mockStudents } from "@/app/data/students";
 import { QRCodeSVG } from "qrcode.react";
 import { 
-  User, GraduationCap, Award, CheckCircle, 
+  GraduationCap, Award, CheckCircle, 
   AlertTriangle, Play, LogOut, ArrowRight, 
   CreditCard, Loader2, Sparkles, BookOpen, Clock, 
   QrCode, ShieldCheck, Check, Info, Lock, Zap, HelpCircle, FileText
@@ -117,7 +117,6 @@ export default function DashboardPage() {
         console.error(e);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -177,7 +176,7 @@ export default function DashboardPage() {
         setStudent(selected);
         window.dispatchEvent(new Event("hdc_auth_change"));
       }
-    } catch (err) {
+    } catch {
       setSearchError("Connection issue. Please verify your credentials or try again.");
     } finally {
       setIsSearching(false);
@@ -240,7 +239,7 @@ export default function DashboardPage() {
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-green-500 via-emerald-400 to-green-600 rounded-t-3xl" />
           
           {/* Official Seal / Verification Header */}
-          <div className="flex items-center justify-between text-xs text-slate-500 border-b border-slate-850 pb-4 mb-6">
+          <div className="flex items-center justify-between text-xs text-slate-550 border-b border-slate-850 pb-4 mb-6">
             <span className="flex items-center gap-1 font-mono tracking-widest uppercase">
               <ShieldCheck className="w-4 h-4 text-green-400" /> Secure Terminal
             </span>
@@ -301,7 +300,7 @@ export default function DashboardPage() {
           </form>
 
           {/* Secured Registry Notes */}
-          <div className="mt-8 border-t border-slate-850 pt-6 text-center text-xs text-slate-550">
+          <div className="mt-8 border-t border-slate-850 pt-6 text-center text-xs text-slate-500">
             <p>Not registered for the skill tournament yet?</p>
             <Link href="/register" className="mt-2 inline-block font-bold text-green-400 hover:text-green-300 transition-colors">
               Register Student Profile &rarr;
@@ -311,7 +310,7 @@ export default function DashboardPage() {
 
         {/* Informative Portal FAQs to build trust prior to login */}
         <div className="mx-auto w-full max-w-lg mt-8 bg-slate-900/20 border border-slate-850/60 rounded-2xl p-6 relative z-10">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+          <h3 className="text-xs font-bold text-slate-450 uppercase tracking-widest mb-4 flex items-center gap-1.5">
             <HelpCircle className="w-4 h-4 text-green-400" /> Portal FAQ & Security Details
           </h3>
           <div className="space-y-4">
@@ -357,6 +356,7 @@ export default function DashboardPage() {
   const isEligibleForGold = score >= 90;
   const isEligibleForSilver = score >= 75 && score < 90;
   const isEligibleForBronze = score >= 60 && score < 75;
+  const isCompetitor = score > 0;
 
   // Mock Invoice details
   const mockTxnId = `TXN-SMART-${student.student_id}-${student.id}8294`.toUpperCase();
@@ -537,7 +537,7 @@ export default function DashboardPage() {
                         {score > 0 ? (
                           <Check className="w-4 h-4 text-green-400 bg-green-500/10 rounded-full p-0.5" />
                         ) : (
-                          <span className="w-4 h-4 bg-slate-800 text-slate-600 rounded-full flex items-center justify-center text-[10px] font-bold"></span>
+                          <span className="w-4 h-4 bg-slate-850 text-slate-600 rounded-full flex items-center justify-center text-[10px] font-bold"></span>
                         )}
                         Tournament Assessment
                       </span>
@@ -550,7 +550,7 @@ export default function DashboardPage() {
                         {score >= 60 && isPaid ? (
                           <Check className="w-4 h-4 text-green-400 bg-green-500/10 rounded-full p-0.5" />
                         ) : (
-                          <span className="w-4 h-4 bg-slate-800 text-slate-600 rounded-full flex items-center justify-center text-[10px] font-bold"></span>
+                          <span className="w-4 h-4 bg-slate-850 text-slate-600 rounded-full flex items-center justify-center text-[10px] font-bold"></span>
                         )}
                         Certificate Generation
                       </span>
@@ -667,7 +667,7 @@ export default function DashboardPage() {
                     >
                       Launch Tournament Exam <Play className="w-4 h-4 fill-slate-950" />
                     </Link>
-                    <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+                    <p className="text-xs text-slate-550 leading-relaxed max-w-sm">
                       * Enter when you are prepared. The examination timer lasts 20 minutes for 10 conceptual challenges.
                     </p>
                   </div>
@@ -714,23 +714,23 @@ export default function DashboardPage() {
               <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 border-dashed">
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 text-xs">
                   <div>
-                    <span className="text-slate-500 block font-mono">TRANSACTION ID</span>
+                    <span className="text-slate-550 block font-mono">TRANSACTION ID</span>
                     <span className="font-mono font-bold text-slate-200 mt-1 block">
                       {isPaid ? mockTxnId : "AWAITING_PAYMENT_ID"}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block font-mono">SETTLEMENT DATE</span>
+                    <span className="text-slate-550 block font-mono">SETTLEMENT DATE</span>
                     <span className="font-bold text-slate-200 mt-1 block">
                       {isPaid ? mockTxnDate : "Awaiting verification"}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block font-mono">REGISTRATION AMOUNT</span>
+                    <span className="text-slate-550 block font-mono">REGISTRATION AMOUNT</span>
                     <span className="font-bold text-slate-200 mt-1 block">₹50.00 INR</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block font-mono">GATEWAY STATUS</span>
+                    <span className="text-slate-550 block font-mono">GATEWAY STATUS</span>
                     <span className={`inline-flex items-center gap-1.5 font-bold mt-1 ${isPaid ? "text-green-400" : "text-yellow-400"}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${isPaid ? "bg-green-400" : "bg-yellow-400 animate-pulse"}`} />
                       {isPaid ? "SUCCESS / CREDITED" : "AWAITING SETTLEMENT"}
@@ -766,7 +766,7 @@ export default function DashboardPage() {
                     🚀
                   </div>
                   <h4 className="font-bold text-xs text-slate-200">Welcome Cadet</h4>
-                  <p className="text-[9px] text-slate-500 mt-1 leading-tight">Registered Profile</p>
+                  <p className="text-[9px] text-slate-550 mt-1 leading-tight">Registered Profile</p>
                 </div>
 
                 {/* Badge 2: Quiz Master */}
@@ -776,12 +776,12 @@ export default function DashboardPage() {
                     : "border-slate-850 bg-slate-900/10 opacity-35"
                 }`}>
                   <div className="text-2xl w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 bg-slate-900/60 text-slate-500">
-                    {quizPracticeDone === 100 ? "📚" : <Lock className="w-4 h-4 text-slate-500" />}
+                    {quizPracticeDone === 100 ? "📚" : <Lock className="w-4 h-4 text-slate-550" />}
                   </div>
                   <h4 className={`font-bold text-xs ${quizPracticeDone === 100 ? "text-slate-200" : "text-slate-400"}`}>
                     Quiz Scholar
                   </h4>
-                  <p className="text-[9px] text-slate-500 mt-1 leading-tight">Complete Quiz Practice</p>
+                  <p className="text-[9px] text-slate-550 mt-1 leading-tight">Complete Quiz Practice</p>
                 </div>
 
                 {/* Badge 3: Logic Wizard */}
@@ -791,27 +791,63 @@ export default function DashboardPage() {
                     : "border-slate-850 bg-slate-900/10 opacity-35"
                 }`}>
                   <div className="text-2xl w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 bg-slate-900/60 text-slate-500">
-                    {logicPracticeDone === 100 ? "🧠" : <Lock className="w-4 h-4 text-slate-500" />}
+                    {logicPracticeDone === 100 ? "🧠" : <Lock className="w-4 h-4 text-slate-550" />}
                   </div>
                   <h4 className={`font-bold text-xs ${logicPracticeDone === 100 ? "text-slate-200" : "text-slate-400"}`}>
                     Logic Sorcerer
                   </h4>
-                  <p className="text-[9px] text-slate-500 mt-1 leading-tight">Complete Logic Practice</p>
+                  <p className="text-[9px] text-slate-550 mt-1 leading-tight">Complete Logic Practice</p>
                 </div>
 
-                {/* Badge 4: Apex Competitor */}
+                {/* Badge 4: Tournament Performance */}
                 <div className={`rounded-xl border transition-all p-3.5 flex flex-col items-center justify-center text-center ${
-                  isEligibleForGold
-                    ? "border-yellow-500/20 bg-yellow-950/5 shadow-[0_0_12px_rgba(234,179,8,0.05)]" 
+                  isCompetitor
+                    ? isEligibleForGold
+                      ? "border-yellow-500/20 bg-yellow-950/5 shadow-[0_0_12px_rgba(234,179,8,0.05)]"
+                      : isEligibleForSilver
+                      ? "border-slate-300/20 bg-slate-100/5 shadow-[0_0_12px_rgba(255,255,255,0.05)]"
+                      : isEligibleForBronze
+                      ? "border-amber-700/20 bg-amber-950/5 shadow-[0_0_12px_rgba(217,119,6,0.05)]"
+                      : "border-green-500/20 bg-green-950/5 shadow-[0_0_12px_rgba(34,197,94,0.05)]"
                     : "border-slate-850 bg-slate-900/10 opacity-35"
                 }`}>
                   <div className="text-2xl w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 bg-slate-900/60 text-slate-500">
-                    {isEligibleForGold ? "🥇" : <Lock className="w-4 h-4 text-slate-500" />}
+                    {!isCompetitor ? (
+                      <Lock className="w-4 h-4 text-slate-500" />
+                    ) : isEligibleForGold ? (
+                      "🥇"
+                    ) : isEligibleForSilver ? (
+                      "🥈"
+                    ) : isEligibleForBronze ? (
+                      "🥉"
+                    ) : (
+                      "🎖️"
+                    )}
                   </div>
-                  <h4 className={`font-bold text-xs ${isEligibleForGold ? "text-yellow-400" : "text-slate-400"}`}>
-                    Gold Performer
+                  <h4 className={`font-bold text-xs ${
+                    !isCompetitor
+                      ? "text-slate-400"
+                      : isEligibleForGold
+                      ? "text-yellow-400"
+                      : isEligibleForSilver
+                      ? "text-slate-200"
+                      : isEligibleForBronze
+                      ? "text-amber-500"
+                      : "text-green-400"
+                  }`}>
+                    {!isCompetitor
+                      ? "Tournament Rank"
+                      : isEligibleForGold
+                      ? "Gold Performer"
+                      : isEligibleForSilver
+                      ? "Silver Performer"
+                      : isEligibleForBronze
+                      ? "Bronze Performer"
+                      : "Active Performer"}
                   </h4>
-                  <p className="text-[9px] text-slate-500 mt-1 leading-tight">Score &gt;= 90% in Exam</p>
+                  <p className="text-[9px] text-slate-550 mt-1 leading-tight">
+                    {!isCompetitor ? "Earned after tournament exam" : `Scored ${score}% in Exam`}
+                  </p>
                 </div>
 
               </div>
@@ -870,7 +906,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-slate-400 mt-1">Ensure enrollment payment is processed before exam dates.</p>
                 </div>
                 <div className="border-l-2 border-slate-700 pl-3.5 py-1">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Award Criteria</p>
+                  <p className="text-xs font-bold text-slate-450 uppercase tracking-widest">Award Criteria</p>
                   <p className="text-sm font-semibold text-slate-200 mt-1">Performance Certification</p>
                   <p className="text-xs text-slate-400 mt-1">Earn Gold Performer with 90+ score; Silver with 75+; Bronze with 60+.</p>
                 </div>
@@ -939,20 +975,6 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon }: { title: string; value: string; icon: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-850 p-5 flex items-center justify-between shadow-md">
-      <div>
-        <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">{title}</p>
-        <h4 className="text-lg font-bold text-slate-200 mt-1">{value}</h4>
-      </div>
-      <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-850 shrink-0">
-        {icon}
-      </div>
-    </div>
-  );
-}
-
 function PracticeBar({ 
   title, 
   percent, 
@@ -970,7 +992,7 @@ function PracticeBar({
     <div>
       <div className="flex justify-between items-center mb-1.5 text-xs">
         <span className="font-semibold text-slate-300">{title}</span>
-        <span className="text-xs text-slate-500 font-bold font-mono">
+        <span className="text-xs text-slate-550 font-bold font-mono">
           {score !== undefined && total !== undefined ? `Score: ${score}/${total}` : `${percent}% Completed`}
         </span>
       </div>
